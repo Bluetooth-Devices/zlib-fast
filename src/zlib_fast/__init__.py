@@ -1,4 +1,4 @@
-__version__ = "0.2.1"
+__version__ = "1.0.0-rc.1"
 
 import gzip as gzip_original
 import sys
