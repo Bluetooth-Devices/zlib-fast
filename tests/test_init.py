@@ -69,3 +69,14 @@ def test_enabled_restores_prior_enabled_state():
         assert sys.modules["gzip"] is best_gzip
     finally:
         disable()
+
+
+def test_enabled_pops_modules_absent_before(monkeypatch):
+    """If zlib/gzip were not imported before the block, they are removed after."""
+    monkeypatch.delitem(sys.modules, "zlib", raising=False)
+    monkeypatch.delitem(sys.modules, "gzip", raising=False)
+    with enabled():
+        assert sys.modules["zlib"] is best_zlib
+        assert sys.modules["gzip"] is best_gzip
+    assert "zlib" not in sys.modules
+    assert "gzip" not in sys.modules
