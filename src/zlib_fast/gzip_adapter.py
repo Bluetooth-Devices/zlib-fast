@@ -1,4 +1,5 @@
 import io
+from typing import IO, cast
 
 from isal import igzip
 from isal.igzip import READ, READ_BUFFER_SIZE, BadGzipFile, _GzipReader, decompress
@@ -50,7 +51,7 @@ class GzipFileAdapter(igzip.GzipFile):
         # Remember where the gzip stream starts so a backward seek can rebuild
         # the reader from the true origin (handles fileobj opened mid-stream).
         self._stream_start = (
-            self.fileobj.tell() if self.mode == READ else 0  # type: ignore[union-attr]
+            cast(IO[bytes], self.fileobj).tell() if self.mode == READ else 0
         )
 
     def seek(self, offset, whence=io.SEEK_SET):  # type: ignore[no-untyped-def]

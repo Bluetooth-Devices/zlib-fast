@@ -45,7 +45,9 @@ def _write_targz(data: bytes, compresslevel: int) -> bytes:
 
 def _read_targz(raw: bytes) -> bytes:
     with tarfile.open(fileobj=io.BytesIO(raw), mode="r:gz") as tar:
-        return tar.extractfile("payload.bin").read()
+        member = tar.extractfile("payload.bin")
+        assert member is not None
+        return member.read()
 
 
 # Levels that exercise the full gzip<->isal level mapping (utils maps 0-9 to 0-3).
