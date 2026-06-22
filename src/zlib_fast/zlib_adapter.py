@@ -1,3 +1,4 @@
+import zlib as _zlib_original
 from typing import Any, Optional
 
 from isal import isal_zlib
@@ -8,6 +9,7 @@ from isal.isal_zlib import (
     MAX_WBITS,
     Z_BEST_COMPRESSION,
     Z_BEST_SPEED,
+    Z_BLOCK,
     Z_DEFAULT_COMPRESSION,
     Z_DEFAULT_STRATEGY,
     Z_FILTERED,
@@ -16,8 +18,10 @@ from isal.isal_zlib import (
     Z_FULL_FLUSH,
     Z_HUFFMAN_ONLY,
     Z_NO_FLUSH,
+    Z_PARTIAL_FLUSH,
     Z_RLE,
     Z_SYNC_FLUSH,
+    Z_TREES,
     Compress,
     Decompress,
     adler32,
@@ -30,6 +34,14 @@ from isal.isal_zlib import (
 )
 
 from .utils import gzip_compress_level_to_isal
+
+# Constants the stdlib `zlib` exposes but `isal_zlib` does not. Provided so the
+# adapter is a complete drop-in: code that reads these names must not crash.
+Z_NO_COMPRESSION = 0
+# Streams produced by isal are standard zlib-format, so the system zlib version
+# strings remain the honest answer for format-compatibility checks.
+ZLIB_VERSION = _zlib_original.ZLIB_VERSION
+ZLIB_RUNTIME_VERSION = _zlib_original.ZLIB_RUNTIME_VERSION
 
 
 def compressobj(
@@ -66,8 +78,11 @@ __all__ = (
     "DEF_BUF_SIZE",
     "DEF_MEM_LEVEL",
     "MAX_WBITS",
+    "ZLIB_RUNTIME_VERSION",
+    "ZLIB_VERSION",
     "Z_BEST_COMPRESSION",
     "Z_BEST_SPEED",
+    "Z_BLOCK",
     "Z_DEFAULT_COMPRESSION",
     "Z_DEFAULT_STRATEGY",
     "Z_FILTERED",
@@ -75,9 +90,12 @@ __all__ = (
     "Z_FIXED",
     "Z_FULL_FLUSH",
     "Z_HUFFMAN_ONLY",
+    "Z_NO_COMPRESSION",
     "Z_NO_FLUSH",
+    "Z_PARTIAL_FLUSH",
     "Z_RLE",
     "Z_SYNC_FLUSH",
+    "Z_TREES",
     "Compress",
     "Decompress",
     "adler32",

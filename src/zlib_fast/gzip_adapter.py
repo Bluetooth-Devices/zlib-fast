@@ -4,6 +4,10 @@ from isal.igzip import READ_BUFFER_SIZE, BadGzipFile, decompress
 from .const import ZLIB_DEFAULT_COMPRESS_LEVEL
 from .utils import gzip_compress_level_to_isal
 
+# gzip header flag bits (RFC 1952). The stdlib `gzip` module exposes these but
+# `igzip` does not; provide them so the adapter is a complete drop-in.
+FTEXT, FHCRC, FEXTRA, FNAME, FCOMMENT = 1, 2, 4, 8, 16
+
 
 def open(  # type: ignore[no-untyped-def]
     filename,
@@ -51,6 +55,11 @@ IGzipFile = GzipFileAdapter
 GzipFile = GzipFileAdapter
 
 __all__ = (
+    "FCOMMENT",
+    "FEXTRA",
+    "FHCRC",
+    "FNAME",
+    "FTEXT",
     "READ_BUFFER_SIZE",
     "BadGzipFile",
     "GzipFile",
