@@ -24,7 +24,8 @@ def disable() -> None:
 
 @contextmanager
 def enabled() -> Iterator[None]:
-    """Enable the adapter for the duration of the ``with`` block.
+    """
+    Enable the adapter for the duration of the ``with`` block.
 
     Restores whichever ``zlib``/``gzip`` modules were installed before the
     block on exit — even if the block raises. Nests safely and never leaks
