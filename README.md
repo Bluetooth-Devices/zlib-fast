@@ -66,6 +66,12 @@ zlib_fast.disable()
 
 The most common use case is for use with `tarfile` which does a late import. `enable` will only be effective for future imports of `zlib`, and will not redirect existing imports. If you need to use this module for other use cases, be sure to call `zlib_fast.enable()` before any code that loads `zlib`.
 
+## Benchmarks
+
+Run `python benchmarks/benchmark.py` to measure the speedup against stdlib
+`zlib`/`gzip` on your hardware. On a 5 MB log-like payload, `tarfile` archive
+creation is typically **10-15x faster**. See [docs/benchmarks.md](docs/benchmarks.md).
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
