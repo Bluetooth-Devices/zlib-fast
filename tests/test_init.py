@@ -1,7 +1,8 @@
 import gzip as gzip_original
+import sys
 import zlib as zlib_original
 
-from zlib_fast import disable, enable
+from zlib_fast import disable, enable, enabled
 from zlib_fast import gzip_adapter as best_gzip
 from zlib_fast import zlib_adapter as best_zlib
 
@@ -25,3 +26,57 @@ def test_enable_disable():
 
     assert zlib is zlib_original
     assert gzip is gzip_original
+
+
+def test_enabled_context_manager():
+    """enabled() swaps inside the block and restores on exit."""
+    disable()
+    assert sys.modules["zlib"] is zlib_original
+    assert sys.modules["gzip"] is gzip_original
+
+    with enabled():
+        assert sys.modules["zlib"] is best_zlib
+        assert sys.modules["gzip"] is best_gzip
+
+    assert sys.modules["zlib"] is zlib_original
+    assert sys.modules["gzip"] is gzip_original
+
+
+def test_enabled_restores_on_exception():
+    """enabled() restores the prior modules even if the block raises."""
+    disable()
+    raised = False
+    try:
+        with enabled():
+            assert sys.modules["zlib"] is best_zlib
+            raise RuntimeError("boom")
+    except RuntimeError:
+        raised = True
+
+    assert raised
+    assert sys.modules["zlib"] is zlib_original
+    assert sys.modules["gzip"] is gzip_original
+
+
+def test_enabled_restores_prior_enabled_state():
+    """Nesting: an already-enabled adapter is restored, not reset to stdlib."""
+    enable()
+    try:
+        with enabled():
+            assert sys.modules["zlib"] is best_zlib
+        # prior state was enabled, so it must remain enabled here
+        assert sys.modules["zlib"] is best_zlib
+        assert sys.modules["gzip"] is best_gzip
+    finally:
+        disable()
+
+
+def test_enabled_pops_modules_absent_before(monkeypatch):
+    """If zlib/gzip were not imported before the block, they are removed after."""
+    monkeypatch.delitem(sys.modules, "zlib", raising=False)
+    monkeypatch.delitem(sys.modules, "gzip", raising=False)
+    with enabled():
+        assert sys.modules["zlib"] is best_zlib
+        assert sys.modules["gzip"] is best_gzip
+    assert "zlib" not in sys.modules
+    assert "gzip" not in sys.modules
