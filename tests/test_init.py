@@ -2,8 +2,6 @@ import gzip as gzip_original
 import sys
 import zlib as zlib_original
 
-import pytest
-
 from zlib_fast import disable, enable, enabled
 from zlib_fast import gzip_adapter as best_gzip
 from zlib_fast import zlib_adapter as best_zlib
@@ -47,11 +45,15 @@ def test_enabled_context_manager():
 def test_enabled_restores_on_exception():
     """enabled() restores the prior modules even if the block raises."""
     disable()
-    with pytest.raises(RuntimeError):
+    raised = False
+    try:
         with enabled():
             assert sys.modules["zlib"] is best_zlib
             raise RuntimeError("boom")
+    except RuntimeError:
+        raised = True
 
+    assert raised
     assert sys.modules["zlib"] is zlib_original
     assert sys.modules["gzip"] is gzip_original
 
