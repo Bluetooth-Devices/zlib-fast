@@ -23,7 +23,7 @@ packages = [
 "Changelog" = "https://github.com/bluetooth-devices/zlib-fast/blob/main/CHANGELOG.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 isal = ">=1.5.3"
 
 [tool.poetry.group.dev.dependencies]
