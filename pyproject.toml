@@ -112,6 +112,11 @@ select = [
     "D104",
     "S101",
 ]
+"benchmarks/**/*" = [
+    "D103", # Missing docstring in public function
+    "D213", # conflicts with ignored D212 (summary on first line)
+    "S311", # pseudo-random is fine for benchmark data generation
+]
 "setup.py" = ["D100"]
 "conftest.py" = ["D100"]
 "docs/conf.py" = ["D100"]
