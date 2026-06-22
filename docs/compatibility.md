@@ -40,7 +40,7 @@ level to its nearest isal equivalent, so compressed **output bytes differ from
 stdlib** even though both decompress correctly. The mapping is:
 
 | zlib level | `-1` | `0` | `1` | `2` | `3` | `4` | `5` | `6` | `7` | `8` | `9` |
-|------------|------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| ---------- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | isal level | `2`  | `0` | `0` | `1` | `1` | `2` | `2` | `2` | `3` | `3` | `3` |
 
 Code that asserts on exact compressed length or bytes will see differences. Code
@@ -50,11 +50,11 @@ that only round-trips data is unaffected.
 
 With stdlib, `gzip.compress(data, 0)` **stores** the data uncompressed (level 0
 = no compression). isal has no "stored" mode, so level 0 maps to its fastest
-*compressing* level instead. For 1 000 repeated bytes:
+_compressing_ level instead. For 1 000 repeated bytes:
 
-| | stdlib `gzip.compress(data, 0)` | adapter |
-|---|---|---|
-| output size | 1023 bytes (stored) | 143 bytes (compressed) |
+|             | stdlib `gzip.compress(data, 0)` | adapter                |
+| ----------- | ------------------------------- | ---------------------- |
+| output size | 1023 bytes (stored)             | 143 bytes (compressed) |
 
 If a consumer relies on level 0 producing a byte-for-byte stored stream, that
 guarantee does not hold.
@@ -71,7 +71,7 @@ speed. Pass an explicit `compresslevel` to pin the behaviour you want.
 stdlib raises `gzip.BadGzipFile` when bytes after a valid gzip stream are not a
 valid next member; isal raises `EOFError` for the same input. A truncated stream
 raises `EOFError` on both, and a completely non-gzip input raises `BadGzipFile`
-on both. Only the *trailing-garbage* case differs. Code that catches
+on both. Only the _trailing-garbage_ case differs. Code that catches
 `BadGzipFile` should also catch `EOFError` if it feeds the adapter
 possibly-padded streams.
 
