@@ -37,5 +37,11 @@ def enabled() -> Iterator[None]:
     try:
         yield
     finally:
-        sys.modules["zlib"] = prev_zlib
-        sys.modules["gzip"] = prev_gzip
+        if prev_zlib is not None:
+            sys.modules["zlib"] = prev_zlib
+        else:
+            sys.modules.pop("zlib", None)
+        if prev_gzip is not None:
+            sys.modules["gzip"] = prev_gzip
+        else:
+            sys.modules.pop("gzip", None)
