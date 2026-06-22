@@ -64,6 +64,16 @@ zlib_fast.enable()
 zlib_fast.disable()
 ```
 
+For a scoped swap that always restores the previous state — even if the block raises — use the `enabled()` context manager:
+
+```python
+import zlib_fast
+
+with zlib_fast.enabled():
+    ...  # zlib/gzip resolve to the fast adapters in here
+# previous zlib/gzip restored on exit
+```
+
 The most common use case is for use with `tarfile` which does a late import. `enable` will only be effective for future imports of `zlib`, and will not redirect existing imports. If you need to use this module for other use cases, be sure to call `zlib_fast.enable()` before any code that loads `zlib`.
 
 ## Contributors ✨
