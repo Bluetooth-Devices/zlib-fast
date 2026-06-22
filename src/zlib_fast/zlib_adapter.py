@@ -21,7 +21,6 @@ from isal.isal_zlib import (
     Compress,
     Decompress,
     adler32,
-    compress,
     crc32,
     crc32_combine,
     decompress,
@@ -30,6 +29,21 @@ from isal.isal_zlib import (
 )
 
 from .utils import gzip_compress_level_to_isal
+
+
+def compress(
+    data: Any,
+    level: int = -1,
+    wbits: int = isal_zlib.MAX_WBITS,
+) -> bytes:
+    """
+    Compress adapter to convert zlib level to isal compression level.
+
+    ``isal_zlib.compress`` only accepts levels 0-3, whereas the stdlib
+    ``zlib.compress`` accepts 0-9 or -1. Translate the level so this stays a
+    drop-in replacement.
+    """
+    return isal_zlib.compress(data, gzip_compress_level_to_isal(level), wbits)
 
 
 def compressobj(
