@@ -1,8 +1,24 @@
 from isal import igzip
-from isal.igzip import READ_BUFFER_SIZE, BadGzipFile, decompress
+from isal.igzip import READ_BUFFER_SIZE, BadGzipFile
 
 from .const import ZLIB_DEFAULT_COMPRESS_LEVEL
 from .utils import gzip_compress_level_to_isal
+
+_GZIP_MAGIC = b"\x1f\x8b"
+
+
+def decompress(data):  # type: ignore[no-untyped-def]
+    """
+    Decompress a gzip-compressed bytes object in one shot.
+
+    Matches stdlib ``gzip.decompress`` error semantics: a non-empty input whose
+    first two bytes are not the gzip magic number raises ``BadGzipFile``. isal's
+    raw ``igzip.decompress`` raises ``EOFError`` for such short/bad-magic inputs,
+    which would break drop-in consumers that catch ``BadGzipFile``.
+    """
+    if data and data[:2] != _GZIP_MAGIC:
+        raise BadGzipFile(f"Not a gzipped file ({data[:2]!r})")
+    return igzip.decompress(data)
 
 
 def open(  # type: ignore[no-untyped-def]
